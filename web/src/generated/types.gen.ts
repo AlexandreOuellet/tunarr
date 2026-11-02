@@ -12600,8 +12600,10 @@ export type GetApiStreamSelectionProfilesResponses = {
                 filterType: 'none' | 'forced' | 'default' | 'any';
                 allowImageBased: boolean;
                 allowExternal: boolean;
+                preferTextBased: boolean;
             } | {
                 type: 'default';
+                preferTextBased: boolean;
             };
         }>;
         usedByChannels: number;
@@ -12636,8 +12638,10 @@ export type PostApiStreamSelectionProfilesData = {
                 filterType?: 'none' | 'forced' | 'default' | 'any';
                 allowImageBased?: boolean;
                 allowExternal?: boolean;
+                preferTextBased?: boolean;
             } | {
                 type: 'default';
+                preferTextBased?: boolean;
             };
         }>;
     };
@@ -12674,8 +12678,10 @@ export type PostApiStreamSelectionProfilesResponses = {
                 filterType: 'none' | 'forced' | 'default' | 'any';
                 allowImageBased: boolean;
                 allowExternal: boolean;
+                preferTextBased: boolean;
             } | {
                 type: 'default';
+                preferTextBased: boolean;
             };
         }>;
     };
@@ -12750,8 +12756,10 @@ export type GetApiStreamSelectionProfilesByIdResponses = {
                 filterType: 'none' | 'forced' | 'default' | 'any';
                 allowImageBased: boolean;
                 allowExternal: boolean;
+                preferTextBased: boolean;
             } | {
                 type: 'default';
+                preferTextBased: boolean;
             };
         }>;
     };
@@ -12783,8 +12791,10 @@ export type PutApiStreamSelectionProfilesByIdData = {
                 filterType?: 'none' | 'forced' | 'default' | 'any';
                 allowImageBased?: boolean;
                 allowExternal?: boolean;
+                preferTextBased?: boolean;
             } | {
                 type: 'default';
+                preferTextBased?: boolean;
             };
         }>;
     };
@@ -12830,8 +12840,10 @@ export type PutApiStreamSelectionProfilesByIdResponses = {
                 filterType: 'none' | 'forced' | 'default' | 'any';
                 allowImageBased: boolean;
                 allowExternal: boolean;
+                preferTextBased: boolean;
             } | {
                 type: 'default';
+                preferTextBased: boolean;
             };
         }>;
     };
