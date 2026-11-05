@@ -29,11 +29,9 @@ import { createEntropy, MersenneTwister19937, Random } from 'random-js';
 import type { NonEmptyArray } from 'ts-essentials';
 import type { Nilable } from '../../types/util.ts';
 import { LoggerFactory } from '../../util/logging/LoggerFactory.ts';
-import type {
-  PaddedProgram,
-  SlotSchedulerProgram,
-} from './slotSchedulerUtil.js';
+import type { SlotSchedulerProgram } from './slotSchedulerUtil.js';
 import {
+  PaddedProgram,
   addHeadAndTailFillerToSlot,
   applyMidRollBreaks,
   createFillerIterators,
@@ -48,6 +46,12 @@ import {
   getFillerIteratorsForSlot,
   maybeAddPrePostFiller,
 } from './slotSchedulerUtil.js';
+import {
+  applyElasticAds,
+  bumperReserveBySlot,
+  requiredAdMs,
+  usesElasticAds,
+} from './elasticAds.ts';
 import { TimeSlotImpl } from './TimeSlotImpl.js';
 
 dayjs.extend(duration);
@@ -182,8 +186,24 @@ export async function scheduleTimeSlots(
 
   let timeCursor = t0;
 
+  // Clip and pad durations are fractional milliseconds, but the clock below
+  // moves in whole milliseconds. Left alone, the two drift apart by a few
+  // milliseconds a block, which adds up to minutes over a year of lineup. Each
+  // duration is rounded and the rounding error is carried into the next one,
+  // so the lineup and the clock stay in step.
+  let roundingCarryMs = 0;
+  const roundDuration = (durationMs: number) => {
+    const wanted = durationMs + roundingCarryMs;
+    const whole = Math.round(wanted);
+    roundingCarryMs = wanted - whole;
+    return whole;
+  };
+
   const pushFlex = (flexDurationMs: number) => {
-    const inc = pushOrExtendFlex(channelPrograms, flexDurationMs);
+    const inc = pushOrExtendFlex(
+      channelPrograms,
+      roundDuration(flexDurationMs),
+    );
     timeCursor = timeCursor.add(inc);
   };
 
@@ -192,8 +212,9 @@ export async function scheduleTimeSlots(
       return;
     }
 
-    channelPrograms.push(program);
-    timeCursor = timeCursor.add(program.duration);
+    const rounded = { ...program, duration: roundDuration(program.duration) };
+    channelPrograms.push(rounded);
+    timeCursor = timeCursor.add(rounded.duration);
   };
 
   let lastPeriodIndex = -1;
@@ -267,6 +288,15 @@ export async function scheduleTimeSlots(
       throw new Error('Could not find a suitable slot');
     }
 
+    // A block may end a few seconds before the grid line (SLACK). What is left
+    // of the window is then only noise: fill it and move on, instead of
+    // treating the next program as longer than the window, which would play it
+    // raw, without ads, and push every later block off its window.
+    if (slotDuration <= constants.SLACK) {
+      pushFlex(slotDuration);
+      continue;
+    }
+
     let program = currSlot.getNextProgram({
       timeCursor: +timeCursor,
       slotDuration: slotDuration,
@@ -305,47 +335,199 @@ export async function scheduleTimeSlots(
       continue;
     }
 
+    const MaxSkipAttempts = 60;
     const slotPadMs = currSlot.padMs ?? schedule.padMs;
-    const paddedProgram = createPaddedProgram(program, slotPadMs);
+    // Elastic ad planning replaces the single-clip pre/post/head/tail filler
+    // and the mid-roll budget below. Slots without it behave as before.
+    const elastic = usesElasticAds(currSlot);
+
+    // Plain flex after a lazy break placeholder must stay its own item:
+    // merging the two would drop the placeholder's filler list.
+    const pushFallbackFlex = (flexMs: number) => {
+      if (flexMs <= 0) {
+        return;
+      }
+      const lastItem = last(channelPrograms);
+      if (lastItem && isFlexProgram(lastItem) && lastItem.fillerConfig) {
+        pushProgram({ type: 'flex', duration: flexMs });
+      } else {
+        pushFlex(flexMs);
+      }
+    };
+
+    // Writes each block into the lineup: its bumpers and ads around the
+    // program, then the block's leftover time as fallback filler or flex.
+    const renderBlocks = (finalPrograms: PaddedProgram[]) => {
+      const pushAds = (clips: CondensedChannelProgram[] | undefined) => {
+        forEach(clips, (clip) => pushProgram(clip));
+      };
+
+      forEach(finalPrograms, (pp) => {
+        const { program, padMs, filler, pods } = pp;
+        // From the outside in. Bumpers are the outer layer at the slot's
+        // edges, and the inner layer next to the program: a bumper right
+        // before and right after the show, with the ads outside it.
+        pushProgram(filler.head);
+        pushAds(pods.head);
+        pushAds(pods.pre);
+        pushProgram(filler.pre);
+        pushProgram(program);
+        pushProgram(filler.post);
+        pushAds(pods.post);
+        pushAds(pods.tail);
+        pushProgram(filler.tail);
+
+        // Special handling for fallback.
+        if (padMs > 0) {
+          let filler = currSlot.getFillerOfType('fallback', {
+            slotDuration: -Infinity, // Pick anything
+            timeCursor: +timeCursor,
+          });
+
+          if (filler) {
+            // Expand / reduce fallback filler to the necessary duration
+            filler = {
+              ...filler,
+              duration: padMs,
+              fillerType: 'fallback',
+            } satisfies FillerProgram;
+            pushProgram(filler);
+          } else {
+            pushFallbackFlex(padMs);
+          }
+        } else {
+          pushFallbackFlex(padMs);
+        }
+      });
+    };
+
+    // With elastic ads a program's minimum block also holds what it must have
+    // next to it: the minimum of every ad position that applies (head for the
+    // window's first program, tail for its last) and the bumper clips. A window
+    // is then not packed with a program that leaves them no room.
+    const bumperReserve = elastic
+      ? bumperReserveBySlot(currSlot, programMap)
+      : {};
+    const padProgram = (
+      candidate: Parameters<typeof createPaddedProgram>[0],
+      where: { first: boolean; last: boolean },
+    ) => {
+      if (!elastic) {
+        return createPaddedProgram(candidate, slotPadMs);
+      }
+      const required = requiredAdMs(
+        currSlot,
+        currSlot.midRollConfig!,
+        candidate,
+        bumperReserve,
+        where,
+      );
+      const padded = createPaddedProgram(
+        { ...candidate, duration: candidate.duration + required },
+        slotPadMs,
+      );
+      return new PaddedProgram(
+        candidate,
+        padded.totalDuration - candidate.duration,
+        {},
+      );
+    };
+
+    const paddedProgram = padProgram(program, { first: true, last: false });
     currSlot.advanceIterator();
     const paddedPrograms: NonEmptyArray<PaddedProgram> = [paddedProgram];
-    maybeAddPrePostFiller(
-      currSlot,
-      paddedProgram,
-      slotDuration - paddedProgram.totalDuration,
-      +timeCursor,
-    );
+    if (!elastic) {
+      maybeAddPrePostFiller(
+        currSlot,
+        paddedProgram,
+        slotDuration - paddedProgram.totalDuration,
+        +timeCursor,
+      );
+    }
     let totalAddedDuration = paddedProgram.totalDuration;
 
     const effectiveOverflow = currSlot.overflow ??
       schedule.overflow ?? { type: 'duration', maxMs: 0 };
 
     for (;;) {
-      const nextProgram = currSlot.getNextProgram({
-        timeCursor: +timeCursor + totalAddedDuration,
-        slotDuration: slotDuration,
-      });
+      const peek = () =>
+        currSlot.getNextProgram({
+          timeCursor: +timeCursor + totalAddedDuration,
+          slotDuration: slotDuration,
+        });
+      let nextProgram = peek();
       if (isNull(nextProgram)) break;
 
-      if (effectiveOverflow.type === 'oneExtra') {
-        if (totalAddedDuration >= slotDuration) break;
-      } else if (
-        totalAddedDuration + nextProgram.duration >
-        slotDuration + effectiveOverflow.maxMs
-      ) {
-        break;
+      // Does a program fit with its required ads? Elastic slots count the
+      // padded block, plus the tail break the window still has to hold.
+      const fitsWindow = (candidate: NonNullable<typeof nextProgram>) =>
+        effectiveOverflow.type === 'oneExtra'
+          ? totalAddedDuration < slotDuration
+          : elastic
+            ? totalAddedDuration +
+                padProgram(candidate, { first: false, last: true })
+                  .totalDuration <=
+              slotDuration + effectiveOverflow.maxMs
+            : totalAddedDuration + candidate.duration <=
+              slotDuration + effectiveOverflow.maxMs;
+
+      if (!fitsWindow(nextProgram)) {
+        // A shuffled slot can skip to a later program that does fit, so the
+        // end of the window is not left empty. Ordered slots cannot.
+        let found = false;
+        if (elastic && currSlot.canSkipPrograms()) {
+          for (let attempt = 0; attempt < MaxSkipAttempts; attempt++) {
+            currSlot.advanceIterator();
+            const candidate = peek();
+            if (isNull(candidate)) break;
+            if (fitsWindow(candidate)) {
+              nextProgram = candidate;
+              found = true;
+              break;
+            }
+          }
+        }
+        if (!found) break;
       }
 
-      const nextPadded = createPaddedProgram(nextProgram, slotPadMs);
+      const nextPadded = padProgram(nextProgram, { first: false, last: false });
       paddedPrograms.push(nextPadded);
       currSlot.advanceIterator();
-      maybeAddPrePostFiller(
-        currSlot,
-        nextPadded,
-        slotDuration - totalAddedDuration - nextPadded.totalDuration,
-        +timeCursor + totalAddedDuration,
-      );
+      if (!elastic) {
+        maybeAddPrePostFiller(
+          currSlot,
+          nextPadded,
+          slotDuration - totalAddedDuration - nextPadded.totalDuration,
+          +timeCursor + totalAddedDuration,
+        );
+      }
       totalAddedDuration += nextPadded.totalDuration;
+    }
+
+    if (elastic) {
+      const finalPrograms = applyElasticAds({
+        paddedPrograms,
+        slot: currSlot,
+        config: currSlot.midRollConfig!,
+        timeCursor: +timeCursor,
+        startPhaseMs: +timeCursor.mod(slotPadMs, true),
+        padMs: slotPadMs,
+        slotDurationMs: slotDuration,
+        overflowMs:
+          effectiveOverflow.type === 'duration' ? effectiveOverflow.maxMs : 0,
+      });
+      // Whatever the slot has left after its blocks joins the last block as
+      // fallback time, so the slot ends exactly on time.
+      const leftover = Math.max(
+        0,
+        slotDuration - sumBy(finalPrograms, (p) => p.totalDuration),
+      );
+      const lastBlock = last(finalPrograms);
+      if (lastBlock) {
+        lastBlock.padMs += leftover;
+      }
+      renderBlocks(finalPrograms);
+      continue;
     }
 
     let remainingTimeInSlot = Math.max(0, slotDuration - totalAddedDuration);
@@ -443,35 +625,7 @@ export async function scheduleTimeSlots(
       }
     }
 
-    forEach(finalPrograms, ({ program, padMs, filler }) => {
-      pushProgram(filler.head);
-      pushProgram(filler.pre);
-      pushProgram(program);
-      pushProgram(filler.post);
-      pushProgram(filler.tail);
-
-      // Special handling for fallback.
-      if (padMs > 0) {
-        let filler = currSlot.getFillerOfType('fallback', {
-          slotDuration: -Infinity, // Pick anything
-          timeCursor: +timeCursor,
-        });
-
-        if (filler) {
-          // Expand / reduce fallback filler to the necessary duration
-          filler = {
-            ...filler,
-            duration: padMs,
-            fillerType: 'fallback',
-          } satisfies FillerProgram;
-          pushProgram(filler);
-        } else {
-          pushFlex(padMs);
-        }
-      } else {
-        pushFlex(padMs);
-      }
-    });
+    renderBlocks(finalPrograms);
   }
 
   return {

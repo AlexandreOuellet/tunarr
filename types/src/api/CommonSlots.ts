@@ -30,12 +30,21 @@ export const SlotFillerTypes = z.enum([
 
 export type SlotFillerTypes = z.infer<typeof SlotFillerTypes>;
 
+// What a filler entry is for. A bumper is a single short clip (a station ident,
+// a "sponsored by" card) picked when the schedule is generated. An ad is a
+// break of several clips that fills a planned length, like a mid-roll break.
+// Entries without a kind are bumpers, so existing slots do not change.
+export const SlotFillerKind = z.enum(['bumper', 'ad']);
+
+export type SlotFillerKind = z.infer<typeof SlotFillerKind>;
+
 export const SlotFiller = z.object({
   types: z.array(SlotFillerTypes).nonempty(),
   fillerListId: z.uuid(),
   fillerOrder: SlotProgrammingFillerOrder.optional().default(
     'shuffle_prefer_short',
   ),
+  kind: SlotFillerKind.optional(),
 });
 
 export type SlotFiller = z.infer<typeof SlotFiller>;
@@ -57,6 +66,23 @@ export const MidRollBreakRuleSchema = z.discriminatedUnion('type', [
 ]);
 
 export type MidRollBreakRule = z.infer<typeof MidRollBreakRuleSchema>;
+
+// A min/max length for one ad position (head, pre, post or tail) when the slot
+// plans its ad time elastically. A range with minMs equal to maxMs is an exact
+// length.
+export const FillerLengthRangeSchema = z
+  .object({
+    minMs: z.number().nonnegative(),
+    maxMs: z.number().positive(),
+  })
+  .refine((r) => r.maxMs >= r.minMs, {
+    message: 'maxMs must be >= minMs',
+  });
+
+export type FillerLengthRange = z.infer<typeof FillerLengthRangeSchema>;
+
+// Lengths that planned ad breaks snap to, in milliseconds.
+export const BreakLengthGridMs = [5000, 10000, 15000, 20000, 30000] as const;
 
 export const MidRollConfigSchema = z
   .object({
@@ -80,6 +106,27 @@ export const MidRollConfigSchema = z
     // 'eager' = resolve filler at schedule time (V1 behavior)
     // 'lazy'  = emit offline placeholders, resolve at stream time
     strategy: z.enum(['eager', 'lazy']).default('eager'),
+    // Elastic ad budget (time slots only, opt-in). The planner gives each
+    // program an ad budget of adRatioMin..adRatioMax of its content length,
+    // rounds the block up to the pad grid, and spreads the budget over the
+    // filler positions that have a length range. See the design proposal.
+    fitToSlot: z.boolean().optional(),
+    // Fractions of the program's content length (0.15 = 15%).
+    adRatioMin: z.number().min(0).max(1).optional(),
+    adRatioMax: z.number().positive().max(1).optional(),
+    // Length ranges for the positions around a program. Mid breaks use
+    // breakDurationMinMs/breakDurationMaxMs.
+    headLength: FillerLengthRangeSchema.optional(),
+    preLength: FillerLengthRangeSchema.optional(),
+    postLength: FillerLengthRangeSchema.optional(),
+    tailLength: FillerLengthRangeSchema.optional(),
+    // Planned break lengths are multiples of this. Defaults to 15 seconds.
+    breakLengthGridMs: z
+      .number()
+      .refine((n) => (BreakLengthGridMs as readonly number[]).includes(n), {
+        message: `breakLengthGridMs must be one of ${BreakLengthGridMs.join(', ')}`,
+      })
+      .optional(),
   })
   .refine(
     (data) => {
@@ -104,6 +151,23 @@ export const MidRollConfigSchema = z
     {
       message:
         'breakDurationMinMs and breakDurationMaxMs must both be set, and max >= min',
+    },
+  )
+  .refine(
+    (data) => {
+      if (!data.fitToSlot) {
+        return true;
+      }
+      return (
+        data.adRatioMax !== undefined &&
+        (data.adRatioMin ?? 0) <= data.adRatioMax &&
+        data.breakDurationMinMs !== undefined &&
+        data.breakDurationMaxMs !== undefined
+      );
+    },
+    {
+      message:
+        'fitToSlot requires adRatioMax (>= adRatioMin) and breakDurationMinMs/breakDurationMaxMs',
     },
   )
   .refine(

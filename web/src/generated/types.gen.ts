@@ -3813,6 +3813,7 @@ export type GetApiChannelsByIdProgrammingResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -3835,6 +3836,26 @@ export type GetApiChannelsByIdProgrammingResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
             } | {
                 startTime: number;
@@ -3878,6 +3899,7 @@ export type GetApiChannelsByIdProgrammingResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -3900,6 +3922,26 @@ export type GetApiChannelsByIdProgrammingResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 type: 'filler';
                 fillerListId: string;
@@ -3920,6 +3962,7 @@ export type GetApiChannelsByIdProgrammingResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -3942,6 +3985,26 @@ export type GetApiChannelsByIdProgrammingResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 startTime: number;
                 padMs?: number;
@@ -3974,6 +4037,7 @@ export type GetApiChannelsByIdProgrammingResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -3996,6 +4060,26 @@ export type GetApiChannelsByIdProgrammingResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
             }>;
             timeZoneOffset: number;
@@ -4015,6 +4099,7 @@ export type GetApiChannelsByIdProgrammingResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -4037,6 +4122,26 @@ export type GetApiChannelsByIdProgrammingResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 cooldownMs: number;
                 periodMs?: number;
@@ -4092,6 +4197,7 @@ export type GetApiChannelsByIdProgrammingResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -4114,6 +4220,26 @@ export type GetApiChannelsByIdProgrammingResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 cooldownMs: number;
                 periodMs?: number;
@@ -4150,6 +4276,7 @@ export type GetApiChannelsByIdProgrammingResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -4172,6 +4299,26 @@ export type GetApiChannelsByIdProgrammingResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 type: 'filler';
                 fillerListId: string;
@@ -4188,6 +4335,7 @@ export type GetApiChannelsByIdProgrammingResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -4210,6 +4358,26 @@ export type GetApiChannelsByIdProgrammingResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 cooldownMs: number;
                 periodMs?: number;
@@ -4344,6 +4512,7 @@ export type PostApiChannelsByIdProgrammingData = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder?: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -4366,6 +4535,26 @@ export type PostApiChannelsByIdProgrammingData = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy?: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
             } | {
                 startTime: number;
@@ -4409,6 +4598,7 @@ export type PostApiChannelsByIdProgrammingData = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder?: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -4431,6 +4621,26 @@ export type PostApiChannelsByIdProgrammingData = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy?: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 type: 'filler';
                 fillerListId: string;
@@ -4451,6 +4661,7 @@ export type PostApiChannelsByIdProgrammingData = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder?: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -4473,6 +4684,26 @@ export type PostApiChannelsByIdProgrammingData = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy?: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 startTime: number;
                 padMs?: number;
@@ -4505,6 +4736,7 @@ export type PostApiChannelsByIdProgrammingData = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder?: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -4527,6 +4759,26 @@ export type PostApiChannelsByIdProgrammingData = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy?: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
             }>;
             timeZoneOffset: number;
@@ -4552,6 +4804,7 @@ export type PostApiChannelsByIdProgrammingData = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder?: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -4574,6 +4827,26 @@ export type PostApiChannelsByIdProgrammingData = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy?: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 cooldownMs: number;
                 periodMs?: number;
@@ -4629,6 +4902,7 @@ export type PostApiChannelsByIdProgrammingData = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder?: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -4651,6 +4925,26 @@ export type PostApiChannelsByIdProgrammingData = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy?: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 cooldownMs: number;
                 periodMs?: number;
@@ -4687,6 +4981,7 @@ export type PostApiChannelsByIdProgrammingData = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder?: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -4709,6 +5004,26 @@ export type PostApiChannelsByIdProgrammingData = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy?: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 type: 'filler';
                 fillerListId: string;
@@ -4725,6 +5040,7 @@ export type PostApiChannelsByIdProgrammingData = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder?: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -4747,6 +5063,26 @@ export type PostApiChannelsByIdProgrammingData = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy?: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 cooldownMs: number;
                 periodMs?: number;
@@ -4904,6 +5240,7 @@ export type PostApiChannelsByIdProgrammingResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -4926,6 +5263,26 @@ export type PostApiChannelsByIdProgrammingResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
             } | {
                 startTime: number;
@@ -4969,6 +5326,7 @@ export type PostApiChannelsByIdProgrammingResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -4991,6 +5349,26 @@ export type PostApiChannelsByIdProgrammingResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 type: 'filler';
                 fillerListId: string;
@@ -5011,6 +5389,7 @@ export type PostApiChannelsByIdProgrammingResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -5033,6 +5412,26 @@ export type PostApiChannelsByIdProgrammingResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 startTime: number;
                 padMs?: number;
@@ -5065,6 +5464,7 @@ export type PostApiChannelsByIdProgrammingResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -5087,6 +5487,26 @@ export type PostApiChannelsByIdProgrammingResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
             }>;
             timeZoneOffset: number;
@@ -5106,6 +5526,7 @@ export type PostApiChannelsByIdProgrammingResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -5128,6 +5549,26 @@ export type PostApiChannelsByIdProgrammingResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 cooldownMs: number;
                 periodMs?: number;
@@ -5183,6 +5624,7 @@ export type PostApiChannelsByIdProgrammingResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -5205,6 +5647,26 @@ export type PostApiChannelsByIdProgrammingResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 cooldownMs: number;
                 periodMs?: number;
@@ -5241,6 +5703,7 @@ export type PostApiChannelsByIdProgrammingResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -5263,6 +5726,26 @@ export type PostApiChannelsByIdProgrammingResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 type: 'filler';
                 fillerListId: string;
@@ -5279,6 +5762,7 @@ export type PostApiChannelsByIdProgrammingResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -5301,6 +5785,26 @@ export type PostApiChannelsByIdProgrammingResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 cooldownMs: number;
                 periodMs?: number;
@@ -5801,6 +6305,7 @@ export type PostApiChannelsByChannelIdScheduleTimeSlotsData = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder?: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -5823,6 +6328,26 @@ export type PostApiChannelsByChannelIdScheduleTimeSlotsData = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy?: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
             } | {
                 startTime: number;
@@ -5866,6 +6391,7 @@ export type PostApiChannelsByChannelIdScheduleTimeSlotsData = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder?: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -5888,6 +6414,26 @@ export type PostApiChannelsByChannelIdScheduleTimeSlotsData = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy?: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 type: 'filler';
                 fillerListId: string;
@@ -5908,6 +6454,7 @@ export type PostApiChannelsByChannelIdScheduleTimeSlotsData = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder?: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -5930,6 +6477,26 @@ export type PostApiChannelsByChannelIdScheduleTimeSlotsData = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy?: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 startTime: number;
                 padMs?: number;
@@ -5962,6 +6529,7 @@ export type PostApiChannelsByChannelIdScheduleTimeSlotsData = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder?: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -5984,6 +6552,26 @@ export type PostApiChannelsByChannelIdScheduleTimeSlotsData = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy?: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
             }>;
             timeZoneOffset: number;
@@ -6091,6 +6679,7 @@ export type PostApiChannelsByChannelIdScheduleSlotsData = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder?: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -6113,6 +6702,26 @@ export type PostApiChannelsByChannelIdScheduleSlotsData = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy?: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 cooldownMs: number;
                 periodMs?: number;
@@ -6168,6 +6777,7 @@ export type PostApiChannelsByChannelIdScheduleSlotsData = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder?: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -6190,6 +6800,26 @@ export type PostApiChannelsByChannelIdScheduleSlotsData = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy?: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 cooldownMs: number;
                 periodMs?: number;
@@ -6226,6 +6856,7 @@ export type PostApiChannelsByChannelIdScheduleSlotsData = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder?: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -6248,6 +6879,26 @@ export type PostApiChannelsByChannelIdScheduleSlotsData = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy?: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 type: 'filler';
                 fillerListId: string;
@@ -6264,6 +6915,7 @@ export type PostApiChannelsByChannelIdScheduleSlotsData = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder?: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -6286,6 +6938,26 @@ export type PostApiChannelsByChannelIdScheduleSlotsData = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy?: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 cooldownMs: number;
                 periodMs?: number;
@@ -6444,6 +7116,7 @@ export type GetApiChannelsByIdScheduleResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -6466,6 +7139,26 @@ export type GetApiChannelsByIdScheduleResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 show: Show | null;
                 /**
@@ -6622,6 +7315,7 @@ export type GetApiChannelsByIdScheduleResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -6644,6 +7338,26 @@ export type GetApiChannelsByIdScheduleResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 startTime: number;
                 padMs?: number;
@@ -6683,6 +7397,7 @@ export type GetApiChannelsByIdScheduleResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -6705,6 +7420,26 @@ export type GetApiChannelsByIdScheduleResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 type: 'filler';
                 fillerListId: string;
@@ -6740,6 +7475,7 @@ export type GetApiChannelsByIdScheduleResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -6762,6 +7498,26 @@ export type GetApiChannelsByIdScheduleResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 smartCollection: {
                     uuid: string;
@@ -6789,6 +7545,7 @@ export type GetApiChannelsByIdScheduleResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -6811,6 +7568,26 @@ export type GetApiChannelsByIdScheduleResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 cooldownMs: number;
                 periodMs?: number;
@@ -6984,6 +7761,7 @@ export type GetApiChannelsByIdScheduleResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -7006,6 +7784,26 @@ export type GetApiChannelsByIdScheduleResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 cooldownMs: number;
                 periodMs?: number;
@@ -7053,6 +7851,7 @@ export type GetApiChannelsByIdScheduleResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -7075,6 +7874,26 @@ export type GetApiChannelsByIdScheduleResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 type: 'filler';
                 fillerListId: string;
@@ -7097,6 +7916,7 @@ export type GetApiChannelsByIdScheduleResponses = {
                     types: Array<'head' | 'pre' | 'post' | 'tail' | 'fallback' | 'mid'>;
                     fillerListId: string;
                     fillerOrder: 'shuffle_prefer_short' | 'shuffle_prefer_long' | 'uniform';
+                    kind?: 'bumper' | 'ad';
                 }>;
                 midRoll?: {
                     intervalMs?: number;
@@ -7119,6 +7939,26 @@ export type GetApiChannelsByIdScheduleResponses = {
                     breakDurationMaxMs?: number;
                     programTypes?: Array<'movie' | 'episode' | 'track' | 'music_video' | 'other_video'>;
                     strategy: 'eager' | 'lazy';
+                    fitToSlot?: boolean;
+                    adRatioMin?: number;
+                    adRatioMax?: number;
+                    headLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    preLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    postLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    tailLength?: {
+                        minMs: number;
+                        maxMs: number;
+                    };
+                    breakLengthGridMs?: number;
                 };
                 cooldownMs: number;
                 periodMs?: number;

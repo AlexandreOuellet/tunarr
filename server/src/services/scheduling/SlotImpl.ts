@@ -25,6 +25,15 @@ function fillerFitsAvailableTime(
   return filler.duration <= state.slotDuration;
 }
 
+// Positions around a program where a slot can plan an ad break.
+export type AdPosition = 'head' | 'pre' | 'post' | 'tail';
+
+function isAdPosition(type: SlotFillerTypes): type is AdPosition {
+  return (
+    type === 'head' || type === 'pre' || type === 'post' || type === 'tail'
+  );
+}
+
 export abstract class SlotImpl<
   SlotType extends BaseSlot,
   ProgramT extends CondensedChannelProgram = CondensedChannelProgram,
@@ -39,6 +48,19 @@ export abstract class SlotImpl<
     tail: [],
     fallback: [],
     mid: [],
+  };
+
+  // Ad breaks around a program (kind 'ad' entries). They are kept apart from
+  // the bumpers above so a bumper pick never draws from an ad list, and the
+  // other way round. Mid breaks are always ads and live in the map above.
+  protected adIteratorsByType: Record<
+    AdPosition,
+    ProgramIterator<FillerProgram>[]
+  > = {
+    head: [],
+    pre: [],
+    post: [],
+    tail: [],
   };
 
   constructor(
@@ -58,7 +80,12 @@ export abstract class SlotImpl<
         }
 
         for (const type of filler.types) {
-          if (this.fillerIteratorsByType[type]) {
+          if (filler.kind === 'ad' && isAdPosition(type)) {
+            this.adIteratorsByType[type].push(it);
+          } else if (filler.kind === 'ad' && type === 'fallback') {
+            // Fallback is a last resort, not an ad position.
+            continue;
+          } else if (this.fillerIteratorsByType[type]) {
             this.fillerIteratorsByType[type].push(it);
           } else {
             this.fillerIteratorsByType[type] = [it];
@@ -72,6 +99,14 @@ export abstract class SlotImpl<
     return this.iterator.current(state);
   }
 
+  /**
+   * Can packing skip a program that does not fit and take a later one? Only a
+   * shuffled slot can: skipping in an ordered slot would reorder its episodes.
+   */
+  canSkipPrograms(): boolean {
+    return 'order' in this.slot && this.slot.order === 'shuffle';
+  }
+
   advanceIterator(): void {
     return this.iterator.next();
   }
@@ -80,7 +115,22 @@ export abstract class SlotImpl<
     type: SlotFillerTypes,
     state: IterationState,
   ): Nullable<FillerProgram> {
-    const its = this.fillerIteratorsByType?.[type];
+    return this.pickFiller(this.fillerIteratorsByType?.[type], type, state);
+  }
+
+  /** One clip for an ad break position, drawn from the slot's ad lists. */
+  getAdFillerOfType(
+    type: AdPosition,
+    state: IterationState,
+  ): Nullable<FillerProgram> {
+    return this.pickFiller(this.adIteratorsByType[type], type, state);
+  }
+
+  private pickFiller(
+    its: ProgramIterator<FillerProgram>[] | undefined,
+    type: SlotFillerTypes,
+    state: IterationState,
+  ): Nullable<FillerProgram> {
     if (!its || isEmpty(its)) {
       return null;
     }
@@ -110,15 +160,39 @@ export abstract class SlotImpl<
     return !isEmpty(its);
   }
 
+  hasAdFillerOfType(type: AdPosition) {
+    return !isEmpty(this.adIteratorsByType[type]);
+  }
+
+  /** Lists that fill an ad position, for the placeholders of lazy breaks. */
+  getAdFillerListIdsOfType(type: AdPosition): string[] {
+    if (!slotHasFiller(this.slot) || !this.slot.filler) return [];
+    return this.slot.filler
+      .filter((f) => f.kind === 'ad' && f.types.includes(type))
+      .map((f) => f.fillerListId);
+  }
+
   hasAnyFillerSettings() {
     return some(this.fillerIteratorsByType, (v) => !isEmpty(v));
   }
 
-  getMidFillerListIds(): string[] {
+  getFillerListIdsOfType(type: SlotFillerTypes): string[] {
     if (!slotHasFiller(this.slot) || !this.slot.filler) return [];
     return this.slot.filler
-      .filter((f) => f.types.includes('mid'))
+      .filter((f) => f.types.includes(type))
       .map((f) => f.fillerListId);
+  }
+
+  getMidFillerListIds(): string[] {
+    return this.getFillerListIdsOfType('mid');
+  }
+
+  /** The slot's bumper entries: its filler entries that are not ads. */
+  get bumperEntries(): { types: SlotFillerTypes[]; fillerListId: string }[] {
+    if (!slotHasFiller(this.slot) || !this.slot.filler) return [];
+    return this.slot.filler
+      .filter((entry) => entry.kind !== 'ad')
+      .map(({ types, fillerListId }) => ({ types, fillerListId }));
   }
 
   get midRollConfig(): MidRollConfig | undefined {

@@ -921,6 +921,14 @@ function maybeAddFillerOfType(
   return remainingTime;
 }
 export class PaddedProgram {
+  /**
+   * Positions that hold several clips instead of one. Only elastic ad planning
+   * fills them: each is a break whose length the planner chose.
+   */
+  public pods: Partial<
+    Record<'head' | 'pre' | 'post' | 'tail', CondensedChannelProgram[]>
+  > = {};
+
   constructor(
     public program: CondensedChannelProgram,
     public padMs: number,
@@ -930,7 +938,8 @@ export class PaddedProgram {
   get totalDuration() {
     const programDur = this.program.duration;
     const fillerDur = sumBy(values(this.filler), (f) => f.duration);
-    return programDur + fillerDur + this.padMs;
+    const podDur = sumBy(values(this.pods).flat(), (f) => f?.duration ?? 0);
+    return programDur + fillerDur + podDur + this.padMs;
   }
 }
 
@@ -1202,11 +1211,14 @@ function distributeFillerAcrossSegments(
   }
 }
 
-function fillDurationWithFiller(
+export function fillDurationWithFiller(
   slot: SlotImpl<BaseSlot>,
   targetDurationMs: number,
   timeCursor: number,
   maxConsecutiveMisses: number = 10,
+  fillerType: SlotFillerTypes = 'mid',
+  // Draw from the slot's ad lists for this position, not its bumper lists.
+  fromAdLists: boolean = false,
 ): { fillers: FillerProgram[]; totalDuration: number } {
   const fillers: FillerProgram[] = [];
   let totalDuration = 0;
@@ -1221,10 +1233,15 @@ function fillDurationWithFiller(
     consecutiveMisses < maxConsecutiveMisses
   ) {
     const remaining = targetDurationMs - totalDuration;
-    const filler = slot.getFillerOfType('mid', {
-      slotDuration: remaining,
-      timeCursor,
-    });
+    const state = { slotDuration: remaining, timeCursor };
+    const filler =
+      fromAdLists &&
+      (fillerType === 'head' ||
+        fillerType === 'pre' ||
+        fillerType === 'post' ||
+        fillerType === 'tail')
+        ? slot.getAdFillerOfType(fillerType, state)
+        : slot.getFillerOfType(fillerType, state);
 
     // A null pick means this candidate didn't fit the remaining break time,
     // not that the list is exhausted. The iterator has already advanced, so
@@ -1236,7 +1253,7 @@ function fillDurationWithFiller(
       continue;
     }
 
-    fillers.push({ ...filler, fillerType: 'mid' });
+    fillers.push({ ...filler, fillerType });
     totalDuration += filler.duration;
     consecutiveMisses = 0;
   }

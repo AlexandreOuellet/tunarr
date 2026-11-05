@@ -32,8 +32,37 @@ import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { slotOrderOptions } from '../../helpers/slotSchedulerUtil.ts';
 import { useFillerLists } from '../../hooks/useFillerLists.ts';
 
-export const SlotFillerDialogPanel = () => {
+type SlotFillerDialogPanelProps = {
+  /**
+   * Which entries this panel owns. Without it, the panel shows every entry and
+   * every type, as random slots use it. Time slots show a Bumpers panel and an
+   * Ads panel.
+   */
+  kind?: 'bumper' | 'ad';
+};
+
+// Bumpers are single clips around a program; ads are breaks of several clips.
+// Mid is always an ad. Fallback is a last resort, so only a bumper.
+const bumperTypes = ['head', 'pre', 'post', 'tail', 'fallback'] as const;
+const adTypes = ['head', 'pre', 'mid', 'post', 'tail'] as const;
+
+export const SlotFillerDialogPanel = ({
+  kind,
+}: SlotFillerDialogPanelProps = {}) => {
   const { t } = useLingui();
+  // Whether an entry belongs to this panel.
+  const ownsEntry = useCallback(
+    (entryKind: 'bumper' | 'ad' | undefined) =>
+      kind === undefined || (entryKind ?? 'bumper') === kind,
+    [kind],
+  );
+  const allowedTypes: readonly string[] | undefined =
+    kind === 'bumper' ? bumperTypes : kind === 'ad' ? adTypes : undefined;
+  // A type this panel does not offer is hidden, not removed from the entry.
+  const showType = (type: string) =>
+    allowedTypes === undefined || allowedTypes.includes(type)
+      ? undefined
+      : { display: 'none' };
   const { control, getValues, watch } = useFormContext<BaseSlot>();
   const fillerFields = useFieldArray({ control, name: 'filler' });
   const { data: fillerLists } = useFillerLists();
@@ -43,7 +72,9 @@ export const SlotFillerDialogPanel = () => {
   const [chosenFillerLists, setChosenFillerLists] = useState<string[]>(() => {
     const slot = getValues();
     return slotHasFiller(slot)
-      ? seq.collect(slot.filler, (filler) => filler?.fillerListId)
+      ? seq.collect(slot.filler, (filler) =>
+          filler && ownsEntry(filler.kind) ? filler.fillerListId : undefined,
+        )
       : [];
   });
 
@@ -58,15 +89,14 @@ export const SlotFillerDialogPanel = () => {
           value.type === 'smart-collection') &&
         info.name?.startsWith('filler')
       ) {
-        const fillerListIds = seq.collect(
-          value.filler,
-          (filler) => filler?.fillerListId,
+        const fillerListIds = seq.collect(value.filler, (filler) =>
+          filler && ownsEntry(filler.kind) ? filler.fillerListId : undefined,
         );
         setChosenFillerLists(fillerListIds);
       }
     });
     return () => unsubscribe();
-  }, [watch]);
+  }, [watch, ownsEntry]);
 
   const fillerListOptions = useMemo(() => {
     if (chosenFillerLists.length <= 1) {
@@ -96,11 +126,12 @@ export const SlotFillerDialogPanel = () => {
     }
 
     fillerFields.append({
-      types: ['pre'],
+      types: kind === 'ad' ? ['mid'] : ['pre'],
       fillerListId: nextAddableFillerList.id,
       fillerOrder: 'shuffle_prefer_short',
+      ...(kind ? { kind } : {}),
     });
-  }, [fillerFields, nextAddableFillerList]);
+  }, [fillerFields, nextAddableFillerList, kind]);
 
   if (fillerLists.length === 0) {
     return null;
@@ -114,125 +145,138 @@ export const SlotFillerDialogPanel = () => {
         disabled={!nextAddableFillerList}
         onClick={handleAddNewFillerList}
       >
-        <Trans>Add filler</Trans>
+        {kind === 'ad' ? (
+          <Trans>Add ads</Trans>
+        ) : kind === 'bumper' ? (
+          <Trans>Add bumpers</Trans>
+        ) : (
+          <Trans>Add filler</Trans>
+        )}
       </Button>
-      {fillerFields.fields.map((fillerField, idx) => (
-        <>
-          <Stack spacing={2}>
-            <Stack spacing={2} direction={'row'}>
-              <IconButton
-                onClick={() => fillerFields.remove(idx)}
-                disableRipple
-                sx={{ alignSelf: 'start', top: 2 }}
-              >
-                <Delete />{' '}
-              </IconButton>
-              <Controller
-                control={control}
-                name={`filler.${idx}.fillerListId` as const}
-                rules={{ required: true }}
-                render={({ field }) => {
-                  const selected = find(fillerLists, { id: field.value });
-                  return (
-                    <Autocomplete
-                      fullWidth
-                      disableClearable={true}
-                      options={fillerListOptions}
-                      getOptionKey={(list) => list.id}
-                      getOptionLabel={(list) => list.name}
-                      // An empty filler list can't contribute anything to the
-                      // slot, so don't let one be picked.
-                      getOptionDisabled={(list) => list.contentCount === 0}
-                      value={selected}
-                      onChange={(_, list) => field.onChange(list?.id)}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          fullWidth
-                          label={t`Filler List`}
-                          helperText={
-                            selected && selected.contentCount === 0
-                              ? t`This filler list has no programs and will be ignored.`
-                              : ' '
-                          }
-                        />
-                      )}
-                    />
-                  );
-                }}
-              />
-              <Controller
-                control={control}
-                name={`filler.${idx}.fillerOrder`}
-                render={({ field }) => {
-                  const opts = slotOrderOptions('filler');
-                  const helperText = find(opts, {
-                    value: field.value,
-                  })?.helperText;
-                  return (
-                    <FormControl fullWidth>
-                      <InputLabel>Order</InputLabel>
-                      <Select label="Order" {...field}>
-                        {map(opts, ({ description, value }) => (
-                          <MenuItem key={value} value={value}>
-                            {description}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      {helperText && (
-                        <FormHelperText>{helperText}</FormHelperText>
-                      )}
-                    </FormControl>
-                  );
-                }}
-              />
+      {fillerFields.fields.map((fillerField, idx) =>
+        !ownsEntry(fillerField.kind) ? null : (
+          <>
+            <Stack spacing={2}>
+              <Stack spacing={2} direction={'row'}>
+                <IconButton
+                  onClick={() => fillerFields.remove(idx)}
+                  disableRipple
+                  sx={{ alignSelf: 'start', top: 2 }}
+                >
+                  <Delete />{' '}
+                </IconButton>
+                <Controller
+                  control={control}
+                  name={`filler.${idx}.fillerListId` as const}
+                  rules={{ required: true }}
+                  render={({ field }) => {
+                    const selected = find(fillerLists, { id: field.value });
+                    return (
+                      <Autocomplete
+                        fullWidth
+                        disableClearable={true}
+                        options={fillerListOptions}
+                        getOptionKey={(list) => list.id}
+                        getOptionLabel={(list) => list.name}
+                        // An empty filler list can't contribute anything to the
+                        // slot, so don't let one be picked.
+                        getOptionDisabled={(list) => list.contentCount === 0}
+                        value={selected}
+                        onChange={(_, list) => field.onChange(list?.id)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            fullWidth
+                            label={t`Filler List`}
+                            helperText={
+                              selected && selected.contentCount === 0
+                                ? t`This filler list has no programs and will be ignored.`
+                                : ' '
+                            }
+                          />
+                        )}
+                      />
+                    );
+                  }}
+                />
+                <Controller
+                  control={control}
+                  name={`filler.${idx}.fillerOrder`}
+                  render={({ field }) => {
+                    const opts = slotOrderOptions('filler');
+                    const helperText = find(opts, {
+                      value: field.value,
+                    })?.helperText;
+                    return (
+                      <FormControl fullWidth>
+                        <InputLabel>Order</InputLabel>
+                        <Select label="Order" {...field}>
+                          {map(opts, ({ description, value }) => (
+                            <MenuItem key={value} value={value}>
+                              {description}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {helperText && (
+                          <FormHelperText>{helperText}</FormHelperText>
+                        )}
+                      </FormControl>
+                    );
+                  }}
+                />
+              </Stack>
+              <Stack direction={'row'} sx={{ pl: 6 }}>
+                <Controller
+                  control={control}
+                  name={`filler.${idx}.types`}
+                  rules={{
+                    validate: { nonempty: (v) => (v ?? []).length > 0 },
+                  }}
+                  render={({ field }) => (
+                    <ToggleButtonGroup
+                      key={fillerField.id}
+                      value={field.value}
+                      onChange={(_, formats) => field.onChange(formats)}
+                      sx={{ width: '100%' }}
+                    >
+                      <ToggleButton value="head" sx={showType('head')}>
+                        <FirstPage />
+                        <Trans>Head</Trans>
+                      </ToggleButton>
+                      <ToggleButton value={'pre'} sx={showType('pre')}>
+                        <LowPriority
+                          sx={{
+                            rotate: '180deg',
+                            transform: 'scale(-1, 1)',
+                            mr: 1,
+                          }}
+                        />{' '}
+                        <Trans>Pre</Trans>
+                      </ToggleButton>
+                      <ToggleButton value="mid" sx={showType('mid')}>
+                        <VerticalAlignCenter sx={{ mr: 1 }} />{' '}
+                        <Trans>Mid</Trans>
+                      </ToggleButton>
+                      <ToggleButton value="post" sx={showType('post')}>
+                        <LowPriority sx={{ mr: 1 }} /> <Trans>Post</Trans>
+                      </ToggleButton>
+                      <ToggleButton value="tail" sx={showType('tail')}>
+                        <LastPage sx={{ mr: 1 }} /> <Trans>Tail</Trans>
+                      </ToggleButton>
+                      <ToggleButton value="fallback" sx={showType('fallback')}>
+                        <Repeat /> <Trans>Fallback</Trans>
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                  )}
+                />
+              </Stack>
             </Stack>
-            <Stack direction={'row'} sx={{ pl: 6 }}>
-              <Controller
-                control={control}
-                name={`filler.${idx}.types`}
-                rules={{ validate: { nonempty: (v) => (v ?? []).length > 0 } }}
-                render={({ field }) => (
-                  <ToggleButtonGroup
-                    key={fillerField.id}
-                    value={field.value}
-                    onChange={(_, formats) => field.onChange(formats)}
-                    sx={{ width: '100%' }}
-                  >
-                    <ToggleButton value="head">
-                      <FirstPage />
-                      <Trans>Head</Trans>
-                    </ToggleButton>
-                    <ToggleButton value={'pre'}>
-                      <LowPriority
-                        sx={{
-                          rotate: '180deg',
-                          transform: 'scale(-1, 1)',
-                          mr: 1,
-                        }}
-                      />{' '}
-                      <Trans>Pre</Trans>
-                    </ToggleButton>
-                    <ToggleButton value="mid">
-                      <VerticalAlignCenter sx={{ mr: 1 }} /> <Trans>Mid</Trans>
-                    </ToggleButton>
-                    <ToggleButton value="post">
-                      <LowPriority sx={{ mr: 1 }} /> <Trans>Post</Trans>
-                    </ToggleButton>
-                    <ToggleButton value="tail">
-                      <LastPage sx={{ mr: 1 }} /> <Trans>Tail</Trans>
-                    </ToggleButton>
-                    <ToggleButton value="fallback">
-                      <Repeat /> <Trans>Fallback</Trans>
-                    </ToggleButton>
-                  </ToggleButtonGroup>
-                )}
-              />
-            </Stack>
-          </Stack>
-          {idx < fillerFields.fields.length - 1 && <Divider />}
-        </>
-      ))}
+            {fillerFields.fields.some(
+              (f, i) => i > idx && ownsEntry(f.kind),
+            ) && <Divider />}
+          </>
+        ),
+      )}
     </Stack>
   );
 };

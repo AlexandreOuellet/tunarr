@@ -168,7 +168,14 @@ export const MidRollConfigPanel = () => {
     <Stack spacing={2}>
       {/* Section 1: Break Positioning */}
       <Typography variant="subtitle2">
-        <Trans>Break Positioning</Trans>
+        <Trans>Where breaks can go</Trans>
+      </Typography>
+      <Typography variant="caption" color="text.secondary">
+        <Trans>
+          These are the positions where a break may be placed. Without Elastic
+          Ad Budget, every position gets a break. With it, the planner uses as
+          many positions as the ad budget allows.
+        </Trans>
       </Typography>
       <Controller
         control={control}
@@ -210,7 +217,7 @@ export const MidRollConfigPanel = () => {
               onChange={(e) =>
                 field.onChange(minutesToMs(Number(e.target.value)))
               }
-              helperText={t`How often to insert a break`}
+              helperText={t`How far apart the possible break positions are`}
             />
           )}
         />
@@ -399,6 +406,15 @@ export const MidRollConfigPanel = () => {
         </Stack>
       )}
 
+      {durationMode === 'range' && (
+        <Typography variant="caption" color="text.secondary">
+          <Trans>
+            With Elastic Ad Budget, each break is stretched between these two
+            lengths to fit the budget.
+          </Trans>
+        </Typography>
+      )}
+
       <Divider />
 
       <Typography variant="subtitle2">Limits</Typography>
@@ -414,7 +430,7 @@ export const MidRollConfigPanel = () => {
             }}
             value={field.value}
             onChange={(e) => field.onChange(Number(e.target.value))}
-            helperText={t`Maximum number of breaks per program (0 = unlimited)`}
+            helperText={t`The most positions that can be used per program (0 = no limit)`}
           />
         )}
       />

@@ -39,6 +39,11 @@ import useStore from '../../store/index.ts';
 import { slotIsLinkable, type LinkMode } from '../../model/CommonSlotModels.ts';
 import { TabPanel } from '../TabPanel.tsx';
 import { EditSlotProgrammingForm } from './EditSlotProgrammingForm.tsx';
+import {
+  needsKindNormalization,
+  normalizeFillerKinds,
+} from '../../helpers/slotFillerKinds.ts';
+import { ElasticAdBudgetPanel } from './ElasticAdBudgetPanel.tsx';
 import { MidRollConfigPanel } from './MidRollConfigPanel.tsx';
 import { SlotFillerDialogPanel } from './SlotFillerDialogPanel.tsx';
 import { TimeSlotConfigDialogPanel } from './TimeSlotConfigDialogPanel.tsx';
@@ -178,23 +183,41 @@ export const EditTimeSlotDialogContent = ({
 
   const slotType = formMethods.watch('type');
   const fillerValues = formMethods.watch('filler' as never) as
-    | { types?: string[] }[]
+    | { types?: string[]; kind?: 'bumper' | 'ad' }[]
     | undefined;
   const hasMidFiller =
     fillerValues?.some((f) => f.types?.includes('mid')) ?? false;
+  // Any ad entry needs the mid-roll settings block: that is where the ad share
+  // and the position lengths are stored.
+  const hasAdFiller = fillerValues?.some((f) => f.kind === 'ad') ?? false;
+  // Tabs: 0 Programming, 1 Bumpers, 2 Ads, 3 Config, 4 Mid-Roll.
   const [tab, setTab] = useState(0);
 
+  // Give every filler entry an explicit kind, so the Bumpers and Ads tabs each
+  // own a clean set. An old entry mixing mid with other types is split.
   useEffect(() => {
-    if (!hasMidFiller && tab === 3) {
+    const { filler: current } = formMethods.getValues() as unknown as {
+      filler?: Parameters<typeof normalizeFillerKinds>[0];
+    };
+    if (current && needsKindNormalization(current)) {
+      formMethods.setValue(
+        'filler' as never,
+        normalizeFillerKinds(current) as never,
+      );
+    }
+  }, [formMethods]);
+
+  useEffect(() => {
+    if (!hasMidFiller && tab === 4) {
       setTab(0);
     }
-    if (hasMidFiller && !formMethods.getValues('midRoll')) {
+    if ((hasMidFiller || hasAdFiller) && !formMethods.getValues('midRoll')) {
       formMethods.setValue(
         'midRoll',
         deriveMidRollDefaults(formMethods.getValues(), channelPrograms),
       );
     }
-  }, [hasMidFiller, tab, formMethods, channelPrograms]);
+  }, [hasMidFiller, hasAdFiller, tab, formMethods, channelPrograms]);
 
   const newSlotForType = useCallback(
     (type: TimeSlotViewModel['type']) => {
@@ -319,12 +342,17 @@ export const EditTimeSlotDialogContent = ({
           >
             <Tab label={t`Programming`} value={0} />
             <Tab
-              label={t`Filler`}
+              label={t`Bumpers`}
               value={1}
               disabled={slotType === 'flex' || fillerLists.length === 0}
             />
-            <Tab label={t`Config`} value={2} />
-            {hasMidFiller && <Tab label={t`Mid-Roll`} value={3} />}
+            <Tab
+              label={t`Ads`}
+              value={2}
+              disabled={slotType === 'flex' || fillerLists.length === 0}
+            />
+            <Tab label={t`Config`} value={3} />
+            {hasMidFiller && <Tab label={t`Mid-Roll`} value={4} />}
           </Tabs>
           <FormProvider {...formMethods}>
             <TabPanel value={tab} index={0}>
@@ -395,12 +423,18 @@ export const EditTimeSlotDialogContent = ({
             </TabPanel>
 
             <TabPanel value={tab} index={1}>
-              <SlotFillerDialogPanel />
+              <SlotFillerDialogPanel kind="bumper" />
             </TabPanel>
             <TabPanel value={tab} index={2}>
-              <TimeSlotConfigDialogPanel />
+              <Stack spacing={3}>
+                <SlotFillerDialogPanel kind="ad" />
+                <ElasticAdBudgetPanel />
+              </Stack>
             </TabPanel>
             <TabPanel value={tab} index={3}>
+              <TimeSlotConfigDialogPanel />
+            </TabPanel>
+            <TabPanel value={tab} index={4}>
               <MidRollConfigPanel />
             </TabPanel>
           </FormProvider>

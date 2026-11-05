@@ -123,3 +123,60 @@ To add 3-minute commercial breaks every 30 minutes to movies longer than 1 hour:
     - **Max Breaks**: 0 (unlimited)
     - **Strategy**: Lazy
     - **Program Types**: Movies only
+
+## Elastic Ad Budget
+
+A slot's filler comes in two kinds, on two tabs of the slot editor:
+
+- **Bumpers** are single short clips: a station ident, a "sponsored by" card.
+  They keep working as they always have (head, pre, post, tail and fallback),
+  and they are always picked when the schedule is generated.
+- **Ads** are breaks of several clips that fill a length you set (head, pre,
+  mid, post and tail), the way a mid-roll break does.
+
+By default a mid-roll break has a fixed length (or a random one inside a
+range), and the total ad time is the number of breaks times that length. The
+**Elastic Ad Budget** option on the Ads tab plans the ad time of each program
+from the program's length instead. It applies to **time slots**.
+
+For each program, Tunarr:
+
+1. Picks the bumpers first. Their lengths are then known.
+2. Takes the content length, the bumpers and the **minimum ad share**, and
+   rounds that up to the next point on the slot's pad grid. That point is where
+   the program's block ends, so the next program starts on the grid.
+3. Spends the room up to that point on ads, never more than the **maximum ad
+   share** of the content length. The break rule offers positions for mid
+   breaks, and every one of them is used as long as the budget holds its
+   minimum length. Mid breaks and every ad position that has a length share the
+   budget. A range is spread in steps of the **break length
+   step** (5 to 30 seconds). A minimum equal to the maximum is an exact length.
+4. Plays whatever is left as fallback filler (or flex when the slot has none).
+
+From the outside in, a block plays: head bumper, head ads, pre ads, pre bumper,
+the program (with its mid ads), post bumper, post ads, tail ads, tail bumper.
+Head and tail belong to the slot's first and last program.
+
+The block never grows past the slot's end, and never takes the room that later
+programs in the slot need to end on their own grid points. A program with
+little room gets as many ads as fit, down to none.
+
+| Content | Pad grid | Block ends | Ads (15-20%) | Fallback |
+| ------- | -------- | ---------- | ------------ | -------- |
+| 75 min  | 15 min   | 90:00      | 15:00        | 0        |
+| 61 min  | 30 min   | 90:00      | about 12:10  | 16:50    |
+| 61 min  | 15 min   | 75:00      | about 12:10  | 1:50     |
+| 93 min  | 30 min   | 120:00     | about 18:35  | 8:25     |
+
+To use it, add a filler list on the **Ads** tab, tick the positions it should
+play in, and enable **Plan ad time from the program length**. Every ad position
+other than mid needs a length. Mid breaks use the break duration range on the
+Mid-Roll tab, which must be set to **Range**. Both the eager and the lazy
+strategy work for ads. The planned lengths are the same, and the strategy
+decides when the clips are picked. Bumpers are not affected by the strategy.
+
+!!! note
+    Existing slots keep working. A filler entry without a kind is a bumper, and
+    a mid break is an ad. When you open an old slot, an entry that mixed mid
+    with other types is split into an ad entry and a bumper entry for the same
+    list.

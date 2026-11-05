@@ -80,8 +80,10 @@ export function resolveBreakPoints(
     }
   }
 
-  // Use max of range for conservative filtering
-  const breakDuration = resolveBreakDuration(config);
+  // Use max of range for conservative filtering. An elastic break plans its own
+  // length and takes no content time, so only the content left after it counts.
+  const breakDuration =
+    config.fitToSlot === true ? 0 : resolveBreakDuration(config);
   const tailBuffer = config.tailBufferMs ?? 0;
 
   offsets = offsets.filter(
